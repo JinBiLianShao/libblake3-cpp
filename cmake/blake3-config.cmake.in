@@ -1,5 +1,15 @@
 @PACKAGE_INIT@
 
-include("${CMAKE_CURRENT_LIST_DIR}/blake3-targets.cmake")
+set_and_check(BLAKE3_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+set_and_check(BLAKE3_LIBRARY_DIR "@PACKAGE_LIBRARY_INSTALL_DIR@")
+
+# 添加库目标
+if(NOT TARGET BLAKE3::blake3)
+    add_library(BLAKE3::blake3 SHARED IMPORTED)
+    set_target_properties(BLAKE3::blake3 PROPERTIES
+        IMPORTED_LOCATION "${BLAKE3_LIBRARY_DIR}/@CMAKE_SHARED_LIBRARY_PREFIX@blake3@CMAKE_SHARED_LIBRARY_SUFFIX@"
+        INTERFACE_INCLUDE_DIRECTORIES "${BLAKE3_INCLUDE_DIR}"
+    )
+endif()
 
 check_required_components(blake3)
